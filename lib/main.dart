@@ -1,4 +1,5 @@
 import 'package:NearMe/constant.dart';
+import 'package:NearMe/map.dart';
 import 'package:NearMe/widgets/counter.dart';
 import 'package:NearMe/widgets/my_header.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,10 @@ bodyText1:TextStyle(color:kBodyTextColordark),
 )
 ),
       home: HomeScreen(),
+      routes: {
+         'map':(context) => Maper(),
+          'home':(context)=>HomeScreen(),
+      },
     );
   }
 }
@@ -76,10 +81,13 @@ class _HomeScreenState extends State<HomeScreen> {
     ]);
     stateMap["states"] = _states;
     stateMap["Andhra Pradesh"] = "andhra.png";
+    stateMap["Andaman"] = "andaman.png";
     stateMap["Arunachal Pradesh"] = "arunachal.png";
     stateMap["Assam"] = "assam.png";
     stateMap["Bihar"] = "bihar.png";
     stateMap["Chhattisgarh"] = "chhattisgarh.png";
+    stateMap["Delhi"] = "delhi.png";
+    stateMap["Daman and Diu"] = "daman.png";
     stateMap["Goa"] = "goa.png";
     stateMap["Gujart"] = "gujarat.png";
     stateMap["Haryana"] = "haryana.png";
@@ -87,13 +95,15 @@ class _HomeScreenState extends State<HomeScreen> {
     stateMap["Jharkhand"] = "jharkhand.png";
     stateMap["Karnataka"] = "karnataka.png";
     stateMap["Kerala"] = "kerala.png";
+    stateMap["Ladakh"] = "ladakh.png";
+   // stateMap["Lakshadweep"] = "lakshadweep.png";
     stateMap["Madhya Pradesh"] = "madhya.png";
-    stateMap["Manipur"] = "manipur.png";
     stateMap["Manipur"] = "manipur.png";
     stateMap["Meghalaya"] = "meghalaya.png";
     stateMap["Mizoram"] = "mizoram.png";
     stateMap["Nagaland"] = "nagaland.png";
     stateMap["Odisha"] = "odisha.png";
+    stateMap["Puducherry"] = "puducherry.png";
     stateMap["Punjab"] = "punjab.png";
     stateMap["Rajasthan"] = "rajasthan.png";
     stateMap["Sikkim"] = "sikkim.png";
@@ -107,6 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     controller.addListener(onScroll);
   }
+  _dropdownChanged(){
+debugPrint('mapname= $mapname'+ "before set state");
+
+  }
 
   @override
   void dispose() {
@@ -119,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
       offset = (controller.hasClients) ? controller.offset : 0;
     });
   }
-  _renderstate(mapname) {
+   _renderstate(mapname) {
     // print('inside render state '+ mapname);
     return Image.asset(
       "assets/states/$mapname",
@@ -164,13 +178,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: SvgPicture.asset("assets/icons/dropdown.svg"),
                       value: _state,
                       elevation: 16,
-                      onChanged: (state) {
+                      onChanged: (state) async {
+                        _dropdownChanged();
                         setState(() {
                           _state = state;
-                          mapname ='$state.png';
+                          mapname = stateMap[state] ;
                         });
-                        print('inside onchanged  ' );
-                        _renderstate(stateMap[state]);
+                        debugPrint('inside onchanged ' +stateMap[state] +' mapname '+mapname );
+                        var mapvalue=stateMap[state] ;
+                        await _renderstate(mapvalue);
                       },
                       items: _states
                           .map<DropdownMenuItem<String>>((String _state) {
@@ -285,8 +301,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    child: _renderstate(mapname),
-
+                    child: GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, 'map'),
+                      child:  _renderstate(mapname),
+                    ),
                   ),
                 ],
               ),

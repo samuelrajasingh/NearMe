@@ -3,16 +3,16 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'model.dart';
 
-class MyApp extends StatefulWidget {
+class Maper extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _MaperState createState() => _MaperState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MaperState extends State<Maper> {
   final Map<String, Marker> _markers = {};
  Hotspots hotspots;
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    final postion = await hotspots.getCities();
+    var postion = await hotspots.getCities();
     setState(() {
       _markers.clear();
       for (final city in postion.cities) {
