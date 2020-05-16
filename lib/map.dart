@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'model.dart';
+import 'model.dart' as hotspots;
+
 
 class Maper extends StatefulWidget {
   @override
@@ -10,9 +11,8 @@ class Maper extends StatefulWidget {
 
 class _MaperState extends State<Maper> {
   final Map<String, Marker> _markers = {};
- Hotspots hotspots;
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    var postion = await hotspots.getCities();
+    final postion = await hotspots.getCities();
     setState(() {
       _markers.clear();
       for (final city in postion.cities) {
@@ -34,14 +34,18 @@ class _MaperState extends State<Maper> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Covid 19 Hotspots'),
-          backgroundColor: Colors.red,
+          // backgroundColor: Colors.red,
         ),
         body: GoogleMap(
+
           onMapCreated: _onMapCreated,
+          myLocationEnabled: true,
+          myLocationButtonEnabled: true,
           initialCameraPosition: CameraPosition(
             target: const LatLng(28.6448, 77.216721),
-            zoom: 2,
+            zoom: 10,
           ),
+
           markers: _markers.values.toSet(),
         ),
       ),

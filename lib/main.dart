@@ -184,7 +184,7 @@ debugPrint('mapname= $mapname'+ "before set state");
                           _state = state;
                           mapname = stateMap[state] ;
                         });
-                        debugPrint('inside onchanged ' +stateMap[state] +' mapname '+mapname );
+                        debugPrint('inside onchanged ${stateMap[state]}  mapname  $mapname' );
                         var mapvalue=stateMap[state] ;
                         await _renderstate(mapvalue);
                       },
