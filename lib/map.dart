@@ -15,6 +15,7 @@ class _MaperState extends State<Maper> {
     final postion = await hotspots.getCities();
     setState(() {
       _markers.clear();
+
       for (final city in postion.cities) {
         final marker = Marker(
           markerId: MarkerId(city.name),
@@ -34,7 +35,7 @@ class _MaperState extends State<Maper> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Covid 19 Hotspots'),
-          // backgroundColor: Colors.red,
+          backgroundColor: Colors.red,
         ),
         body: GoogleMap(
 
@@ -43,7 +44,7 @@ class _MaperState extends State<Maper> {
           myLocationButtonEnabled: true,
           initialCameraPosition: CameraPosition(
             target: const LatLng(28.6448, 77.216721),
-            zoom: 10,
+            zoom: 5,
           ),
 
           markers: _markers.values.toSet(),

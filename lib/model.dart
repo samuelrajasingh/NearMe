@@ -6,7 +6,7 @@ part 'model.g.dart';
 
 @JsonSerializable()
 class Hotspots {
-  List<Cities> cities;
+  final List<Cities> cities;
 
   Hotspots({this.cities});
  factory Hotspots.fromJson(Map<String, dynamic> json) =>
@@ -18,9 +18,9 @@ class Hotspots {
 
 @JsonSerializable()
 class Cities {
-  String name;
-  double longitude;
-  double latitude;
+  final String name;
+  final double longitude;
+  final double latitude;
 
   Cities({this.name, this.longitude, this.latitude});
   factory Cities.fromJson(Map<String, dynamic> json) => _$CitiesFromJson(json);
