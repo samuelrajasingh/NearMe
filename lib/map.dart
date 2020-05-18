@@ -33,10 +33,10 @@ class _MaperState extends State<Maper> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Covid 19 Hotspots'),
-          backgroundColor: Colors.red,
-        ),
+        // appBar: AppBar(
+        //   // title: const Text('Covid 19 Hotspots'),
+        //   // backgroundColor: Colors.red,
+        // ),
         body: GoogleMap(
 
           onMapCreated: _onMapCreated,
