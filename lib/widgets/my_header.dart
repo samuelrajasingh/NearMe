@@ -44,14 +44,18 @@ class _MyHeaderState extends State<MyHeader> {
           children: <Widget>[
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return InfoScreen();
-                    },
-                  ),
-                );
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return InfoScreen();
+                      },
+                    ),
+                  );
+                }
               },
               child: SvgPicture.asset("assets/icons/menu.svg"),
             ),
