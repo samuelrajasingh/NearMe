@@ -97,7 +97,8 @@ class Statewise {
   String state;
   String statecode;
   String statenotes;
-
+  bool operator ==(o) => o is Statewise && o.state == state;
+int get hashCode => state.hashCode;
   Statewise(
       {this.active,
       this.confirmed,
