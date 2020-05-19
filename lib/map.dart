@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 import 'model.dart' as hotspots;
-
 
 class Maper extends StatefulWidget {
   @override
@@ -11,8 +11,23 @@ class Maper extends StatefulWidget {
 
 class _MaperState extends State<Maper> {
   final Map<String, Marker> _markers = {};
-  Future<void> _onMapCreated(GoogleMapController controller) async {
+  Location location;
+  static const LatLng SOURCE_LOCATION = LatLng(28.644800, 77.216721);
+  GoogleMapController controller;
+  LocationData currentLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    location = new Location();
+    location.onLocationChanged.listen((LocationData cLoc) {
+      currentLocation = cLoc;
+    });
+  }
+
+  Future<void> _onMapCreated(controller) async {
     final postion = await hotspots.getCities();
+
     setState(() {
       _markers.clear();
 
@@ -31,23 +46,39 @@ class _MaperState extends State<Maper> {
 
   @override
   Widget build(BuildContext context) {
+    CameraPosition initialCameraPosition =
+        CameraPosition(zoom: 5, tilt: 0, bearing: 0, target: SOURCE_LOCATION);
+    if (currentLocation != null) {
+      initialCameraPosition = CameraPosition(
+          target: LatLng(currentLocation.latitude, currentLocation.longitude),
+          zoom: 17,
+          tilt: 0,
+          bearing: 0);
+    }
+
     return MaterialApp(
       home: Scaffold(
-        // appBar: AppBar(
-        //   // title: const Text('Covid 19 Hotspots'),
-        //   // backgroundColor: Colors.red,
-        // ),
-        body: GoogleMap(
 
-          onMapCreated: _onMapCreated,
-          myLocationEnabled: true,
-          myLocationButtonEnabled: true,
-          initialCameraPosition: CameraPosition(
-            target: const LatLng(28.6448, 77.216721),
-            zoom: 5,
-          ),
+        appBar: AppBar(
+            title: const Text('Covid 19 Hotspots'),
+            backgroundColor: Colors.blue,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pushNamed(context, 'home');
+              },
+            )),
+        body: Stack(
+          children: <Widget>[
+            GoogleMap(
+              onMapCreated: _onMapCreated,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
+              initialCameraPosition: initialCameraPosition,
+              markers: _markers.values.toSet(),
+            ),
+          ],
 
-          markers: _markers.values.toSet(),
         ),
       ),
     );

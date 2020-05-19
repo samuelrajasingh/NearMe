@@ -8,8 +8,9 @@ class MyHeader extends StatefulWidget {
   final String textTop;
   final String textBottom;
   final double offset;
+  final String screen;
   const MyHeader(
-      {Key key, this.image, this.textTop, this.textBottom, this.offset})
+      {Key key, this.image, this.textTop, this.textBottom, this.offset, this.screen})
       : super(key: key);
 
   @override
