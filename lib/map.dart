@@ -58,7 +58,6 @@ class _MaperState extends State<Maper> {
 
     return MaterialApp(
       home: Scaffold(
-
         appBar: AppBar(
             title: const Text('Covid 19 Hotspots'),
             backgroundColor: Colors.blue,
@@ -78,7 +77,6 @@ class _MaperState extends State<Maper> {
               markers: _markers.values.toSet(),
             ),
           ],
-
         ),
       ),
     );

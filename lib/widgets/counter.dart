@@ -41,8 +41,9 @@ class Counter extends StatelessWidget {
           Text(
             "$number",
             style: TextStyle(
-              fontSize: .07* MediaQuery.of(context).size.width,
+              fontSize: .04* MediaQuery.of(context).size.width,
               color: color,
+              fontWeight: FontWeight.w500
             ),
           ),
           Text(title, style: kSubTextStyle),

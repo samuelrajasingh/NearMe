@@ -5,9 +5,14 @@ import 'package:NearMe/widgets/my_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'districtdata.dart';
+import 'info_screen.dart';
 import 'model/covidmodel.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+import 'model/covidmodel.dart';
+import 'model/covidmodel.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,11 +28,11 @@ class MyApp extends StatelessWidget {
         fontFamily: "Poppins",
         textTheme: TextTheme(bodyText1: kHeadingTextStyle),
       ),
-      darkTheme: ThemeData(
-          scaffoldBackgroundColor: kBackgroundColordark,
-          textTheme: TextTheme(
-            bodyText1: TextStyle(color: kBodyTextColordark),
-          )),
+      // darkTheme: ThemeData(
+      //     scaffoldBackgroundColor: kBackgroundColordark,
+      //     textTheme: TextTheme(
+      //       bodyText1: TextStyle(color: kBodyTextColordark),
+      //     )),
       home: HomeScreen(),
       routes: {
         'map': (context) => Maper(),
@@ -46,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final controller = ScrollController();
   Statewise statewise;
   double offset = 0;
-  String _state;
   String mapname = "andhra.png";
   List<String> _states = new List<String>();
   var stateMap = new Map();
@@ -120,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
     stateMap["West Bengal"] = "westbengal.png";
     stateMap["Total"] = "india.png";
     stateMap["Maharashtra"] = "maharastra.png";
-    stateMap["Jammu and Kashmir"]="jammu.png";
+    stateMap["Jammu and Kashmir"] = "jammu.png";
 
     //  _state = _states.elementAt(0);
     super.initState();
@@ -154,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: SingleChildScrollView(
         controller: controller,
         child: Column(
@@ -185,8 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       child: FutureBuilder<List<Statewise>>(
                           future: _fetchData(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<List<Statewise>> snapshot) {
+                          builder: (context, snapshot) {
                             if (!snapshot.hasData) return Container();
                             return DropdownButton(
                               isExpanded: true,
@@ -195,27 +198,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                   SvgPicture.asset("assets/icons/dropdown.svg"),
                               //value: statewise,
                               elevation: 16,
-                              hint: Text("India"),
+                              hint: Text("Select the State"),
 
                               items: snapshot.data
                                   .map((statewise) => DropdownMenuItem(
-                                        child:statewise.state =="Total" ?Text("India"):Text(statewise.state),
+                                        child: statewise.state == "Total"
+                                            ? Text("India")
+                                            : statewise.state ==
+                                                    "Dadra and Nagar Haveli and Daman and Diu"
+                                                ? Text("Dadra/Daman UTs")
+                                                : statewise.state ==
+                                                        "State Unassigned"
+                                                    ? Text("Others")
+                                                    : Text(statewise.state),
                                         value: statewise,
                                       ))
                                   .toList(),
                               onChanged: (Statewise value) async {
                                 _dropdownChanged();
                                 setState(() {
-                                  statewise = value;
-                                  _state = statewise.state;
-                                  mapname = stateMap[statewise.state];
+                                  this.statewise = value;
+                                  mapname = stateMap[this.statewise.state];
                                 });
                                 debugPrint(
                                     'inside onchanged ${stateMap[statewise.state]}  mapname  $mapname');
                                 // var mapvalue=stateMap[statewise.state] ;
                                 //await _renderstate(mapvalue);
                               },
-                            //  value: statewise,
+                              //value: statewise,
+                              value: this.statewise,
                             );
                           }),
                     ),
@@ -248,39 +259,61 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             Spacer(),
-                            statewise.state == "Total"
-                                ? Text(
-                                    "India",
-                                    style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  )
-                                : statewise.state ==
-                                        "Dadra and Nagar Haveli and Daman and Diu"
-                                    ? Text(
-                                        "Dadra/Daman",
-                                        style: TextStyle(
-                                          color: kPrimaryColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      )
-                                    : statewise.state ==
-                                            "Andaman and Nicobar Islands"
-                                        ? Text(
-                                            "Andaman",
-                                            style: TextStyle(
-                                              color: kPrimaryColor,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          )
-                                        : Text(
-                                            statewise.state,
-                                            style: TextStyle(
-                                              color: kPrimaryColor,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
+
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return DistrictData(statewise:statewise);
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "See more",
+                                style: TextStyle(
+                                  color: kPrimaryColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            // statewise.state == "Total"
+                            //     ? Text(
+                            //         "India",
+                            //         style: TextStyle(
+                            //           color: kPrimaryColor,
+                            //           fontWeight: FontWeight.w600,
+                            //         ),
+                            //       )
+                            //     : statewise.state ==
+                            //             "Dadra and Nagar Haveli and Daman and Diu"
+                            //         ? Text(
+                            //             "Dadra/Daman",
+                            //             style: TextStyle(
+                            //               color: kPrimaryColor,
+                            //               fontWeight: FontWeight.w600,
+                            //             ),
+                            //           )
+                            //         : statewise.state ==
+                            //                 "Andaman and Nicobar Islands"
+                            //             ? Text(
+                            //                 "Andaman",
+                            //                 style: TextStyle(
+                            //                   color: kPrimaryColor,
+                            //                   fontWeight: FontWeight.w600,
+                            //                 ),
+                            //               )
+                            //             : Text(
+                            //                 statewise.state,
+                            //                 style: TextStyle(
+                            //                   color: kPrimaryColor,
+                            //                   fontWeight: FontWeight.w600,
+                            //                 ),
+                            //               ),
+                            //  ,
+                            // )
                           ],
                         ),
                         SizedBox(height: 20),
@@ -325,48 +358,55 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "Spread of Virus",
-                              style: kTitleTextstyle,
-                            ),
-                            statewise.state == "Total"
-                                ? Text(
-                                    "Map of India",
-                                    style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.w600,
+                        statewise.state != "State Unassigned"
+                            ? Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      "Spread of Virus",
+                                      style: kTitleTextstyle,
                                     ),
-                                  )
-                                : statewise.state ==
-                                        "Dadra and Nagar Haveli and Daman and Diu"
-                                    ? Text(
-                                        "Map of Dadra/Daman",
-                                        style: TextStyle(
-                                          color: kPrimaryColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      )
-                                    : statewise.state ==
-                                            "Andaman and Nicobar Islands"
+                                    statewise.state == "Total"
                                         ? Text(
-                                            "Map of Andaman",
+                                            "Map of India",
                                             style: TextStyle(
                                               color: kPrimaryColor,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           )
-                                        : Text(
-                                            "Map of ${statewise.state}",
-                                            style: TextStyle(
-                                              color: kPrimaryColor,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                          ],
-                        ),
+                                        : statewise.state ==
+                                                "Dadra and Nagar Haveli and Daman and Diu"
+                                            ? Text(
+                                                "Map of Dadra/Daman",
+                                                style: TextStyle(
+                                                  color: kPrimaryColor,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              )
+                                            : statewise.state ==
+                                                    "Andaman and Nicobar Islands"
+                                                ? Text(
+                                                    "Map of Andaman",
+                                                    style: TextStyle(
+                                                      color: kPrimaryColor,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    "Map of ${statewise.state}",
+                                                    style: TextStyle(
+                                                      color: kPrimaryColor,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
                         Container(
                           margin: EdgeInsets.only(top: 20),
                           padding: EdgeInsets.all(20),

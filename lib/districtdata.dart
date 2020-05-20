@@ -1,15 +1,25 @@
 import 'package:NearMe/constant.dart';
-import 'package:NearMe/widgets/my_header.dart';
+import 'package:NearMe/model/covidmodel.dart';
 import 'package:NearMe/widgets/my_header_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class InfoScreen extends StatefulWidget {
+import 'constant.dart';
+import 'constant.dart';
+import 'model/covidmodel.dart';
+
+class DistrictData extends StatefulWidget {
+ final Statewise statewise;
+ 
+  const DistrictData({Key key, this.statewise, }) : super(key: key);
+
+   
+
   @override
-  _InfoScreenState createState() => _InfoScreenState();
+  _DistrictDataState createState() => _DistrictDataState();
 }
 
-class _InfoScreenState extends State<InfoScreen> {
+class _DistrictDataState extends State<DistrictData> {
   final controller = ScrollController();
   double offset = 0;
 
@@ -41,9 +51,9 @@ class _InfoScreenState extends State<InfoScreen> {
           children: <Widget>[
             MyHeader2(
               image: "assets/icons/coronadr.svg",
-              textTop: "Get to know",
-              textBottom: "About Covid-19.",
-              offset: offset,
+              textTop: "District Wise Data",
+              textBottom: "Stay safe.",
+              offset: 50,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -51,47 +61,49 @@ class _InfoScreenState extends State<InfoScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "Symptoms",
+                   widget.statewise.state,
                     style: kTitleTextstyle,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 2),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        SymptomCard(
-                          image: "assets/images/headache.png",
-                          title: "Headache",
+                        DataCard(
+                          value: "${((double.parse(widget.statewise.active)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
+                          title: "Active(%)",
                           isActive: true,
+                          color: kInfectedColor,
                         ),
-                        SymptomCard(
-                          image: "assets/images/caugh.png",
-                          title: "Caugh",
+                        DataCard(
+                          value: "${((double.parse(widget.statewise.recovered)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
+                          title: "Recovery rate",
+                          color:kRecovercolor
                         ),
-                        SymptomCard(
-                          image: "assets/images/fever.png",
-                          title: "Fever",
+                        DataCard(
+                          value: "${((double.parse(widget.statewise.deaths)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
+                          title: "Mortality rate",
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: 20),
-                  Text("Prevention", style: kTitleTextstyle),
+                  Text("Distrct Wise Data", style: kTitleTextstyle),
                   SizedBox(height: 20),
-                  PreventCard(
-                    text:
-                        "Since the start of the coronavirus outbreak some places have fully embraced wearing facemasks",
-                    image: "assets/images/wear_mask.png",
-                    title: "Wear face mask",
-                  ),
-                  PreventCard(
-                    text:
-                        "Since the start of the coronavirus outbreak some places have fully embraced wearing facemasks",
-                    image: "assets/images/wash_hands.png",
-                    title: "Wash your hands",
-                  ),
-                  SizedBox(height: 50),
+                  // PreventCard(
+                  //   text:
+                  //       "Since the start of the coronavirus outbreak some places have fully embraced wearing facemasks",
+                  //   image: "assets/images/wear_mask.png",
+                  //   title: "Wear face mask",
+                  // ),
+                  // PreventCard(
+                  //   text:
+                  //       "Since the start of the coronavirus outbreak some places have fully embraced wearing facemasks",
+                  //   image: "assets/images/wash_hands.png",
+                  //   title: "Wash your hands",
+                  // ),
+                  // SizedBox(height: 50),
                 ],
               ),
             )
@@ -180,21 +192,22 @@ class PreventCard extends StatelessWidget {
   }
 }
 
-class SymptomCard extends StatelessWidget {
-  final String image;
+class DataCard extends StatelessWidget {
+  final String value;
   final String title;
   final bool isActive;
-  const SymptomCard({
+   final color;
+  const DataCard({
     Key key,
-    this.image,
+   this.value,
     this.title,
-    this.isActive = false,
+    this.isActive = false, this.color, 
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Colors.white,
@@ -214,7 +227,11 @@ class SymptomCard extends StatelessWidget {
       ),
       child: Column(
         children: <Widget>[
-          Image.asset(image, height: 90),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(child: Center(child: Text(value,style: TextStyle(fontSize: .06*MediaQuery.of(context).size.width,fontWeight: FontWeight.w600,color: color ),)),height: 60,width: 70,),
+          ),
+          //Image.asset(image, height: 90),
           Text(
             title,
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -223,4 +240,6 @@ class SymptomCard extends StatelessWidget {
       ),
     );
   }
+
+  
 }

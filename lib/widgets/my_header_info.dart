@@ -1,19 +1,16 @@
-import 'package:NearMe/constant.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../districtdata.dart';
-import '../info_screen.dart';
-import '../info_screen.dart';
+import '../constant.dart';
+import 'my_header.dart';
 
-class MyHeader extends StatefulWidget {
+class MyHeader2 extends StatefulWidget {
   final String image;
   final String textTop;
   final String textBottom;
   final double offset;
   final String screen;
-  const MyHeader(
+  const MyHeader2(
       {Key key, this.image, this.textTop, this.textBottom, this.offset, this.screen})
       : super(key: key);
 
@@ -21,13 +18,13 @@ class MyHeader extends StatefulWidget {
   _MyHeaderState createState() => _MyHeaderState();
 }
 
-class _MyHeaderState extends State<MyHeader> {
+class _MyHeaderState extends State<MyHeader2> {
   @override
   Widget build(BuildContext context) {
     return ClipPath(
       clipper: MyClipper(),
       child: Container(
-        padding: EdgeInsets.only(left: 20, top: 50, right: 20),
+        padding: EdgeInsets.only(left: 10, top: 50, right: 20),
         height: .45*MediaQuery.of(context).size.height,
         width: double.infinity,
         decoration: BoxDecoration(
@@ -44,21 +41,12 @@ class _MyHeaderState extends State<MyHeader> {
           ),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+        //  mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return InfoScreen();
-                    },
-                  ),
-                );
-              },
-              child: SvgPicture.asset("assets/icons/menu.svg"),
-            ),
+              IconButton(icon: Icon(Icons.arrow_back,color: Colors.white,), onPressed:(){Navigator.pop(context);}
+
+              ),
             SizedBox(height: 20),
             Expanded(
               child: Stack(
@@ -90,23 +78,5 @@ class _MyHeaderState extends State<MyHeader> {
         ),
       ),
     );
-  }
-}
-
-class MyClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.lineTo(0, size.height - 80);
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 80);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
   }
 }
