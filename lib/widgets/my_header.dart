@@ -3,6 +3,8 @@ import 'package:NearMe/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../districtdata.dart';
+import '../info_screen.dart';
 import '../info_screen.dart';
 
 class MyHeader extends StatefulWidget {
