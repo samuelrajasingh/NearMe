@@ -5,6 +5,7 @@ import 'package:NearMe/widgets/my_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'info_screen.dart';
 import 'model/covidmodel.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -158,6 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
         controller: controller,
         child: Column(
           children: <Widget>[
+  
             MyHeader(
               image: "assets/icons/Drcorona.svg",
               textTop: "All you need",

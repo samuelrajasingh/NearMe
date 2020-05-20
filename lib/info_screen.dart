@@ -1,5 +1,6 @@
 import 'package:NearMe/constant.dart';
 import 'package:NearMe/widgets/my_header.dart';
+import 'package:NearMe/widgets/my_header_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -38,7 +39,7 @@ class _InfoScreenState extends State<InfoScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            MyHeader(
+            MyHeader2(
               image: "assets/icons/coronadr.svg",
               textTop: "Get to know",
               textBottom: "About Covid-19.",
