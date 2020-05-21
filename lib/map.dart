@@ -56,11 +56,12 @@ class _MaperState extends State<Maper> {
           bearing: 0);
     }
 
-    return MaterialApp(
-      home: Scaffold(
+     return   Scaffold(
         appBar: AppBar(
             title: const Text('Covid 19 Hotspots'),
-            backgroundColor: Colors.blue,
+            backgroundColor: Color(0xFF3383CD),
+              
+          
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
@@ -78,7 +79,7 @@ class _MaperState extends State<Maper> {
             ),
           ],
         ),
-      ),
+ 
     );
   }
 }

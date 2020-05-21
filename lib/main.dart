@@ -27,12 +27,14 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: kBackgroundColor,
         fontFamily: "Poppins",
         textTheme: TextTheme(bodyText1: kHeadingTextStyle),
+        pageTransitionsTheme: PageTransitionsTheme(builders: {TargetPlatform.android: CupertinoPageTransitionsBuilder(),}),
       ),
       // darkTheme: ThemeData(
       //     scaffoldBackgroundColor: kBackgroundColordark,
       //     textTheme: TextTheme(
       //       bodyText1: TextStyle(color: kBodyTextColordark),
       //     )),
+      
       home: HomeScreen(),
       routes: {
         'map': (context) => Maper(),
@@ -159,283 +161,301 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        controller: controller,
-        child: Column(
-          children: <Widget>[
-            MyHeader(
-              image: "assets/icons/Drcorona.svg",
-              textTop: "All you need",
-              textBottom: "is stay at home.",
-              offset: offset,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              height: 60,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                  color: Color(0xFFE5E5E5),
+      body:FutureBuilder<List<Statewise>>(
+        future: _fetchData(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+             return Center(
+                  child: CircularProgressIndicator(
+                //backgroundColor: Colors.pink[500],
+              ));
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+            
+              case ConnectionState.done:
+              if (snapshot.hasData) {
+                
+          // if (!snapshot.hasData) return Container();
+          return SingleChildScrollView(
+            controller: controller,
+            child: Column(
+              children: <Widget>[
+                MyHeader(
+                  image: "assets/icons/Drcorona.svg",
+                  textTop: "All you need",
+                  textBottom: "is stay at home.",
+                  offset: offset,
                 ),
-              ),
-              child: Row(
-                children: <Widget>[
-                  SvgPicture.asset("assets/icons/maps-and-flags.svg"),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: Container(
-                      child: FutureBuilder<List<Statewise>>(
-                          future: _fetchData(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) return Container();
-                            return DropdownButton(
-                              isExpanded: true,
-                              underline: SizedBox(),
-                              icon:
-                                  SvgPicture.asset("assets/icons/dropdown.svg"),
-                              //value: statewise,
-                              elevation: 16,
-                              hint: Text("Select the State"),
-
-                              items: snapshot.data
-                                  .map((statewise) => DropdownMenuItem(
-                                        child: statewise.state == "Total"
-                                            ? Text("India")
-                                            : statewise.state ==
-                                                    "Dadra and Nagar Haveli and Daman and Diu"
-                                                ? Text("Dadra/Daman UTs")
-                                                : statewise.state ==
-                                                        "State Unassigned"
-                                                    ? Text("Others")
-                                                    : Text(statewise.state),
-                                        value: statewise,
-                                      ))
-                                  .toList(),
-                              onChanged: (Statewise value) async {
-                                _dropdownChanged();
-                                setState(() {
-                                  this.statewise = value;
-                                  mapname = stateMap[this.statewise.state];
-                                });
-                                debugPrint(
-                                    'inside onchanged ${stateMap[statewise.state]}  mapname  $mapname');
-                                // var mapvalue=stateMap[statewise.state] ;
-                                //await _renderstate(mapvalue);
-                              },
-                              //value: statewise,
-                              value: this.statewise,
-                            );
-                          }),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  height: 60,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: Color(0xFFE5E5E5),
                     ),
                   ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            statewise != null
-                ? Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
+                  child: Row(
+                    children: <Widget>[
+                      SvgPicture.asset("assets/icons/maps-and-flags.svg"),
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: Container(
+                          child: DropdownButton(
+                                  isExpanded: true,
+                                  underline: SizedBox(),
+                                  icon:
+                                      SvgPicture.asset("assets/icons/dropdown.svg"),
+                                  //value: statewise,
+                                  elevation: 16,
+                                  hint: Text("Select the State"),
+
+                                  items: snapshot.data
+                                      .map((statewise) => DropdownMenuItem(
+                                            child: statewise.state == "Total"
+                                                ? Text("India")
+                                                : statewise.state ==
+                                                        "Dadra and Nagar Haveli and Daman and Diu"
+                                                    ? Text("Dadra/Daman UTs")
+                                                    : statewise.state ==
+                                                            "State Unassigned"
+                                                        ? Text("Others")
+                                                        : Text(statewise.state),
+                                            value: statewise,
+                                          ))
+                                      .toList(),
+                                  onChanged: (Statewise value) async {
+                                    _dropdownChanged();
+                                    setState(() {
+                                      this.statewise = value;
+                                      mapname = stateMap[this.statewise.state];
+                                    });
+                                    debugPrint(
+                                        'inside onchanged ${stateMap[statewise.state]}  mapname  $mapname');
+                                    // var mapvalue=stateMap[statewise.state] ;
+                                    //await _renderstate(mapvalue);
+                                  },
+                                  //value: statewise,
+                                  value: this.statewise,
+                                ),
+                              
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                statewise != null
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
                           children: <Widget>[
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Case Update\n",
-                                    style: kTitleTextstyle,
+                            Row(
+                              children: <Widget>[
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: "Case Update\n",
+                                        style: kTitleTextstyle,
+                                      ),
+                                      TextSpan(
+                                        text: "${statewise.lastupdatedtime}",
+                                        style: TextStyle(
+                                          color: kTextLightColor,
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  TextSpan(
-                                    text: "${statewise.lastupdatedtime}",
+                                ),
+                                Spacer(),
+
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return DistrictData(statewise:statewise);
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    "See more",
                                     style: TextStyle(
-                                      color: kTextLightColor,
+                                      color: kPrimaryColor,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                  )
+                                  ),
+                                ),
+                              
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(0, 4),
+                                    blurRadius: 30,
+                                    color: kShadowColor,
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Counter(
+                                      color: kInfectedColor,
+                                      number: statewise.confirmed,
+                                      title: "Infected",
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Counter(
+                                      color: kDeathColor,
+                                      number: statewise.deaths,
+                                      title: "Deaths",
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Counter(
+                                      color: kRecovercolor,
+                                      number: statewise.recovered,
+                                      title: "Recovered",
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                            Spacer(),
-
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return DistrictData(statewise:statewise);
-                                    },
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                "See more",
-                                style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            // statewise.state == "Total"
-                            //     ? Text(
-                            //         "India",
-                            //         style: TextStyle(
-                            //           color: kPrimaryColor,
-                            //           fontWeight: FontWeight.w600,
-                            //         ),
-                            //       )
-                            //     : statewise.state ==
-                            //             "Dadra and Nagar Haveli and Daman and Diu"
-                            //         ? Text(
-                            //             "Dadra/Daman",
-                            //             style: TextStyle(
-                            //               color: kPrimaryColor,
-                            //               fontWeight: FontWeight.w600,
-                            //             ),
-                            //           )
-                            //         : statewise.state ==
-                            //                 "Andaman and Nicobar Islands"
-                            //             ? Text(
-                            //                 "Andaman",
-                            //                 style: TextStyle(
-                            //                   color: kPrimaryColor,
-                            //                   fontWeight: FontWeight.w600,
-                            //                 ),
-                            //               )
-                            //             : Text(
-                            //                 statewise.state,
-                            //                 style: TextStyle(
-                            //                   color: kPrimaryColor,
-                            //                   fontWeight: FontWeight.w600,
-                            //                 ),
-                            //               ),
-                            //  ,
-                            // )
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Container(
-                          padding: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(0, 4),
-                                blurRadius: 30,
-                                color: kShadowColor,
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Expanded(
-                                child: Counter(
-                                  color: kInfectedColor,
-                                  number: statewise.confirmed,
-                                  title: "Infected",
-                                ),
-                              ),
-                              Expanded(
-                                child: Counter(
-                                  color: kDeathColor,
-                                  number: statewise.deaths,
-                                  title: "Deaths",
-                                ),
-                              ),
-                              Expanded(
-                                child: Counter(
-                                  color: kRecovercolor,
-                                  number: statewise.recovered,
-                                  title: "Recovered",
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        statewise.state != "State Unassigned"
-                            ? Container(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      "Spread of Virus",
-                                      style: kTitleTextstyle,
-                                    ),
-                                    statewise.state == "Total"
-                                        ? Text(
-                                            "Map of India",
-                                            style: TextStyle(
-                                              color: kPrimaryColor,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          )
-                                        : statewise.state ==
-                                                "Dadra and Nagar Haveli and Daman and Diu"
+                            SizedBox(height: 20),
+                            statewise.state != "State Unassigned"
+                                ? Container(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(
+                                          "Spread of Virus",
+                                          style: kTitleTextstyle,
+                                        ),
+                                        statewise.state == "Total"
                                             ? Text(
-                                                "Map of Dadra/Daman",
+                                                "Map of India",
                                                 style: TextStyle(
                                                   color: kPrimaryColor,
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               )
                                             : statewise.state ==
-                                                    "Andaman and Nicobar Islands"
+                                                    "Dadra and Nagar Haveli and Daman and Diu"
                                                 ? Text(
-                                                    "Map of Andaman",
+                                                    "Map of Dadra/Daman",
                                                     style: TextStyle(
                                                       color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                   )
-                                                : Text(
-                                                    "Map of ${statewise.state}",
-                                                    style: TextStyle(
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                  ),
-                                  ],
-                                ),
-                              )
-                            : Container(),
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          padding: EdgeInsets.all(20),
-                          height: 178,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(0, 10),
-                                blurRadius: 30,
-                                color: kShadowColor,
-                              ),
-                            ],
-                          ),
-                          child: GestureDetector(
-                            onTap: () => Navigator.pushNamed(context, 'map'),
-                            child: mapname != null
-                                ? _renderstate(mapname)
+                                                : statewise.state ==
+                                                        "Andaman and Nicobar Islands"
+                                                    ? Text(
+                                                        "Map of Andaman",
+                                                        style: TextStyle(
+                                                          color: kPrimaryColor,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      )
+                                                    : Text(
+                                                        "Map of ${statewise.state}",
+                                                        style: TextStyle(
+                                                          color: kPrimaryColor,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                      ],
+                                    ),
+                                  )
                                 : Container(),
-                          ),
+                            Container(
+                              margin: EdgeInsets.only(top: 20),
+                              padding: EdgeInsets.all(20),
+                              height: 178,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(0, 10),
+                                    blurRadius: 30,
+                                    color: kShadowColor,
+                                  ),
+                                ],
+                              ),
+                              child: GestureDetector(
+                                onTap: () => Navigator.pushNamed(context, 'map'),
+                                child: mapname != null
+                                    ? _renderstate(mapname)
+                                    : Container(),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )
-                : Text("You haven't Selected Anything"),
-          ],
-        ),
+                      )
+                    : Text("You haven't Selected Anything"),
+              ],
+            ),
+          );
+         } 
+         else if (snapshot.hasError) {
+               return Column(
+         //crossAxisAlignment: CrossAxisAlignment.center,
+         //mainAxisAlignment: MainAxisAlignment.center,
+         children: <Widget>[
+             MyHeader(
+                  image: "assets/icons/Drcorona.svg",
+                  textTop: "All you need",
+                  textBottom: "is stay at home.",
+                  offset: offset,
+                ),
+           
+              Center(child: Text("Something Went Wrong"))
+         ],
+       );
+              }
+
+          }
+       return Column(
+         //crossAxisAlignment: CrossAxisAlignment.center,
+         //mainAxisAlignment: MainAxisAlignment.center,
+         children: <Widget>[
+             MyHeader(
+                  image: "assets/icons/Drcorona.svg",
+                  textTop: "All you need",
+                  textBottom: "is stay at home.",
+                  offset: offset,
+                ),
+           Center(
+             child: CircularProgressIndicator(
+                //  backgroundColor: Colors.[500],
+                ),
+           ),
+              Center(child: SizedBox(height: 7,)),
+              Center(child: Text("Loading"))
+         ],
+       );
+         }
       ),
     );
   }
