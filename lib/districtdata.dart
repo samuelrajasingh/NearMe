@@ -1,7 +1,7 @@
-
 import 'package:NearMe/constant.dart';
 import 'package:NearMe/model/Distwise.dart';
 import 'package:NearMe/model/covidmodel.dart';
+import 'package:NearMe/widgets/counter.dart';
 import 'package:NearMe/widgets/my_header_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,11 +12,12 @@ import 'model/Districtwise.dart';
 import 'model/covidmodel.dart';
 
 class DistrictData extends StatefulWidget {
- final Statewise statewise;
- 
-  const DistrictData({Key key, this.statewise, }) : super(key: key);
+  final Statewise statewise;
 
-  
+  const DistrictData({
+    Key key,
+    this.statewise,
+  }) : super(key: key);
 
   @override
   _DistrictDataState createState() => _DistrictDataState();
@@ -26,6 +27,7 @@ class _DistrictDataState extends State<DistrictData> {
   final controller = ScrollController();
   double offset = 0;
   Districtwise districtwise;
+  DistrictDatum districtDatum;
   @override
   void initState() {
     super.initState();
@@ -63,11 +65,15 @@ class _DistrictDataState extends State<DistrictData> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                widget.statewise.state !="Total"?  Text(
-                   widget.statewise.state,
-                    style: kTitleTextstyle,
-                  ):Text("India",
-                    style: kTitleTextstyle,),
+                  widget.statewise.state != "Total"
+                      ? Text(
+                          widget.statewise.state,
+                          style: kTitleTextstyle,
+                        )
+                      : Text(
+                          "India",
+                          style: kTitleTextstyle,
+                        ),
                   SizedBox(height: 2),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -77,7 +83,8 @@ class _DistrictDataState extends State<DistrictData> {
                         Padding(
                           padding: const EdgeInsets.all(6.0),
                           child: DataCard(
-                            value: "${((double.parse(widget.statewise.active)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
+                            value:
+                                "${((double.parse(widget.statewise.active) / double.parse(widget.statewise.confirmed) * 100).toStringAsPrecision(3))}%",
                             title: "Active(%)",
                             isActive: true,
                             color: kInfectedColor,
@@ -86,15 +93,16 @@ class _DistrictDataState extends State<DistrictData> {
                         Padding(
                           padding: const EdgeInsets.all(6.0),
                           child: DataCard(
-                            value: "${((double.parse(widget.statewise.recovered)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
-                            title: "Recovery rate",
-                            color:kRecovercolor
-                          ),
+                              value:
+                                  "${((double.parse(widget.statewise.recovered) / double.parse(widget.statewise.confirmed) * 100).toStringAsPrecision(3))}%",
+                              title: "Recovery rate",
+                              color: kRecovercolor),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(6.0),
                           child: DataCard(
-                            value: "${((double.parse(widget.statewise.deaths)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
+                            value:
+                                "${((double.parse(widget.statewise.deaths) / double.parse(widget.statewise.confirmed) * 100).toStringAsPrecision(3))}%",
                             title: "Mortality rate",
                           ),
                         ),
@@ -102,71 +110,38 @@ class _DistrictDataState extends State<DistrictData> {
                     ),
                   ),
                   SizedBox(height: 20),
-                 widget.statewise.state !="Total"? Text("Distrct Wise Data", style: kTitleTextstyle):Container(),
-                  SizedBox(height: 20),
-              
-                  // FutureBuilder<List<Districtwise>>(
-                  //   future: getDist(),
-                  //   builder: (context, snapshot) {
-                  //        List<Districtwise> data=snapshot.data;
-                  //     return ListView.builder(
-                  //       itemCount: data.length,
-                  //       itemBuilder: (BuildContext context, int index) { 
-                  //       return Container(child: Text(data[index].state));
-     
-
-                  //     },);
-                      
-                  //     // return ListView.builder(
-                  //     //   itemCount: list[].districtData.length,
-                  //     //                         itemBuilder: (BuildContext context, int index) {  },
-                  //     //                         child: Container(
-                  //     //           padding: EdgeInsets.all(20),
-                  //     //           decoration: BoxDecoration(
-                  //     //             borderRadius: BorderRadius.circular(20),
-                  //     //             color: Colors.white,
-                  //     //             boxShadow: [
-                  //     //               BoxShadow(
-                  //     //                 offset: Offset(0, 4),
-                  //     //                 blurRadius: 30,
-                  //     //                 color: kShadowColor,
-                  //     //               ),
-                  //     //             ],
-                  //     //           ),
-                  //     //           child: Row(
-                  //     //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //     //             children: <Widget>[
-                  //     //               Expanded(
-                  //     //                 child: Counter(
-                  //     //                   color: kInfectedColor,
-                  //     //                   number: list[2]['sssd'].districtData[1].district.toString(),
-                  //     //                   title:snapshot.data[1].state.toString(),
-          
-                  //     //                 ),
-                  //     //               ),
-                  //     //               // Expanded(
-                  //     //               //   child: Counter(
-                  //     //               //     color: kDeathColor,
-                  //     //               //     number: snapshot.data[1].districtData[0].active.toString(),
-                  //     //               //     title: "Deaths",
-                  //     //               //   ),
-                  //     //               // ),
-                  //     //               // Expanded(
-                  //     //               //   child: Counter(
-                  //     //               //     color: kRecovercolor,
-                  //     //               //     number: snapshot.data[0].districtData[0].active.toString(),
-                  //     //               //     title: "Recovered",
-                  //     //               //   ),
-                  //     //               // ),
-                  //     //             ],
-                  //     //           ),
-                  //     //         ),
-                  //     // );
-                  //   }
-                  // ),
-                        
-                              
-                            
+                  widget.statewise.state != "Total"
+                      ? Text("Distrct Wise Data", style: kTitleTextstyle)
+                      : Container(),
+                  // SizedBox(height: 10),
+                  Container(
+                    child: FutureBuilder<List<Districtwise>>(
+                        future: getDist(),
+                        builder: (context, snapshot) {
+                          List<Districtwise> districtwise = snapshot.data;
+                          //List<DistrictDatum> districtdata;
+                          if (snapshot.hasError) {
+                            return Column(
+                              children: <Widget>[
+                                Center(child: Text("Something Went Wrong",style: TextStyle(color:kPrimaryColor),))
+                              ],
+                            );
+                          }
+                          return ListView.builder(
+                              shrinkWrap: true,
+                              physics: ClampingScrollPhysics(),
+                              itemCount: districtwise?.length ?? 0,
+                              itemBuilder: (BuildContext context, int index) {
+                                // districtdata =
+                                //     snapshot.data[index].districtData;
+                                return widget.statewise.state ==
+                                        snapshot.data[index].state
+                                    ? _build(context,
+                                        snapshot.data[index].districtData)
+                                    : Container();
+                              });
+                        }),
+                  ),
                 ],
               ),
             )
@@ -174,23 +149,82 @@ class _DistrictDataState extends State<DistrictData> {
         ),
       ),
     );
-
   }
 
-
-  
-
-
-
-
-
-
-
+  Widget _build(context, districtDatum) {
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: ListView.builder(
+          itemCount: districtDatum?.length ?? 0,
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          itemBuilder: (BuildContext context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          districtDatum[index].district,
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 4),
+                            blurRadius: 30,
+                            color: kShadowColor,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Expanded(
+                              child: Counter(
+                                color: kInfectedColor,
+                                number:
+                                    districtDatum[index].confirmed.toString(),
+                                title: "Infected",
+                              ),
+                            ),
+                            Expanded(
+                              child: Counter(
+                                color: kDeathColor,
+                                number:
+                                    districtDatum[index].deceased.toString(),
+                                title: "Deaths",
+                              ),
+                            ),
+                            Expanded(
+                              child: Counter(
+                                color: kRecovercolor,
+                                number:
+                                    districtDatum[index].recovered.toString(),
+                                title: "Recovered",
+                              ),
+                            )
+                          ])),
+                ],
+              ),
+            );
+          }),
+    );
+  }
 }
-
-
-
-
 
 class PreventCard extends StatelessWidget {
   final String image;
@@ -258,7 +292,6 @@ class PreventCard extends StatelessWidget {
                       alignment: Alignment.topRight,
                       child: SvgPicture.asset("assets/icons/forward.svg"),
                     ),
-
                   ],
                 ),
               ),
@@ -274,12 +307,13 @@ class DataCard extends StatelessWidget {
   final String value;
   final String title;
   final bool isActive;
-   final color;
+  final color;
   const DataCard({
     Key key,
-   this.value,
+    this.value,
     this.title,
-    this.isActive = false, this.color, 
+    this.isActive = false,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -307,7 +341,19 @@ class DataCard extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(color: Colors.white,child: Center(child: Text(value,style: TextStyle(fontSize: .06*MediaQuery.of(context).size.width,fontWeight: FontWeight.w600,color: color ),)),height: 60,width: 90,),
+            child: Container(
+              color: Colors.white,
+              child: Center(
+                  child: Text(
+                value,
+                style: TextStyle(
+                    fontSize: .06 * MediaQuery.of(context).size.width,
+                    fontWeight: FontWeight.w600,
+                    color: color),
+              )),
+              height: 60,
+              width: 90,
+            ),
           ),
           //Image.asset(image, height: 90),
           Text(
@@ -318,6 +364,4 @@ class DataCard extends StatelessWidget {
       ),
     );
   }
-
-  
 }

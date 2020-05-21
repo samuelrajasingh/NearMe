@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
             case ConnectionState.none:
              return Center(
                   child: CircularProgressIndicator(
-                backgroundColor: Colors.pink[500],
+                //backgroundColor: Colors.pink[500],
               ));
             case ConnectionState.waiting:
             case ConnectionState.active:
