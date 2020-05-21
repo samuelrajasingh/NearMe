@@ -1,11 +1,14 @@
+
 import 'package:NearMe/constant.dart';
+import 'package:NearMe/model/Distwise.dart';
 import 'package:NearMe/model/covidmodel.dart';
 import 'package:NearMe/widgets/my_header_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'constant.dart';
-import 'constant.dart';
+
+import 'model/Districtwise.dart';
 import 'model/covidmodel.dart';
 
 class DistrictData extends StatefulWidget {
@@ -13,7 +16,7 @@ class DistrictData extends StatefulWidget {
  
   const DistrictData({Key key, this.statewise, }) : super(key: key);
 
-   
+  
 
   @override
   _DistrictDataState createState() => _DistrictDataState();
@@ -22,7 +25,7 @@ class DistrictData extends StatefulWidget {
 class _DistrictDataState extends State<DistrictData> {
   final controller = ScrollController();
   double offset = 0;
-
+  Districtwise districtwise;
   @override
   void initState() {
     super.initState();
@@ -60,50 +63,110 @@ class _DistrictDataState extends State<DistrictData> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
+                widget.statewise.state !="Total"?  Text(
                    widget.statewise.state,
                     style: kTitleTextstyle,
-                  ),
+                  ):Text("India",
+                    style: kTitleTextstyle,),
                   SizedBox(height: 2),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        DataCard(
-                          value: "${((double.parse(widget.statewise.active)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
-                          title: "Active(%)",
-                          isActive: true,
-                          color: kInfectedColor,
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: DataCard(
+                            value: "${((double.parse(widget.statewise.active)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
+                            title: "Active(%)",
+                            isActive: true,
+                            color: kInfectedColor,
+                          ),
                         ),
-                        DataCard(
-                          value: "${((double.parse(widget.statewise.recovered)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
-                          title: "Recovery rate",
-                          color:kRecovercolor
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: DataCard(
+                            value: "${((double.parse(widget.statewise.recovered)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
+                            title: "Recovery rate",
+                            color:kRecovercolor
+                          ),
                         ),
-                        DataCard(
-                          value: "${((double.parse(widget.statewise.deaths)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
-                          title: "Mortality rate",
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: DataCard(
+                            value: "${((double.parse(widget.statewise.deaths)/double.parse(widget.statewise.confirmed)*100).toStringAsPrecision(3))}%",
+                            title: "Mortality rate",
+                          ),
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: 20),
-                  Text("Distrct Wise Data", style: kTitleTextstyle),
+                 widget.statewise.state !="Total"? Text("Distrct Wise Data", style: kTitleTextstyle):Container(),
                   SizedBox(height: 20),
-                  // PreventCard(
-                  //   text:
-                  //       "Since the start of the coronavirus outbreak some places have fully embraced wearing facemasks",
-                  //   image: "assets/images/wear_mask.png",
-                  //   title: "Wear face mask",
+              
+                  // FutureBuilder<List<Districtwise>>(
+                  //   future: getDist(),
+                  //   builder: (context, snapshot) {
+                  //        List<Districtwise> data=snapshot.data;
+                  //     return ListView.builder(
+                  //       itemCount: data.length,
+                  //       itemBuilder: (BuildContext context, int index) { 
+                  //       return Container(child: Text(data[index].state));
+     
+
+                  //     },);
+                      
+                  //     // return ListView.builder(
+                  //     //   itemCount: list[].districtData.length,
+                  //     //                         itemBuilder: (BuildContext context, int index) {  },
+                  //     //                         child: Container(
+                  //     //           padding: EdgeInsets.all(20),
+                  //     //           decoration: BoxDecoration(
+                  //     //             borderRadius: BorderRadius.circular(20),
+                  //     //             color: Colors.white,
+                  //     //             boxShadow: [
+                  //     //               BoxShadow(
+                  //     //                 offset: Offset(0, 4),
+                  //     //                 blurRadius: 30,
+                  //     //                 color: kShadowColor,
+                  //     //               ),
+                  //     //             ],
+                  //     //           ),
+                  //     //           child: Row(
+                  //     //             mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //     //             children: <Widget>[
+                  //     //               Expanded(
+                  //     //                 child: Counter(
+                  //     //                   color: kInfectedColor,
+                  //     //                   number: list[2]['sssd'].districtData[1].district.toString(),
+                  //     //                   title:snapshot.data[1].state.toString(),
+          
+                  //     //                 ),
+                  //     //               ),
+                  //     //               // Expanded(
+                  //     //               //   child: Counter(
+                  //     //               //     color: kDeathColor,
+                  //     //               //     number: snapshot.data[1].districtData[0].active.toString(),
+                  //     //               //     title: "Deaths",
+                  //     //               //   ),
+                  //     //               // ),
+                  //     //               // Expanded(
+                  //     //               //   child: Counter(
+                  //     //               //     color: kRecovercolor,
+                  //     //               //     number: snapshot.data[0].districtData[0].active.toString(),
+                  //     //               //     title: "Recovered",
+                  //     //               //   ),
+                  //     //               // ),
+                  //     //             ],
+                  //     //           ),
+                  //     //         ),
+                  //     // );
+                  //   }
                   // ),
-                  // PreventCard(
-                  //   text:
-                  //       "Since the start of the coronavirus outbreak some places have fully embraced wearing facemasks",
-                  //   image: "assets/images/wash_hands.png",
-                  //   title: "Wash your hands",
-                  // ),
-                  // SizedBox(height: 50),
+                        
+                              
+                            
                 ],
               ),
             )
@@ -111,8 +174,23 @@ class _DistrictDataState extends State<DistrictData> {
         ),
       ),
     );
+
   }
+
+
+  
+
+
+
+
+
+
+
 }
+
+
+
+
 
 class PreventCard extends StatelessWidget {
   final String image;
@@ -229,7 +307,7 @@ class DataCard extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(child: Center(child: Text(value,style: TextStyle(fontSize: .06*MediaQuery.of(context).size.width,fontWeight: FontWeight.w600,color: color ),)),height: 60,width: 70,),
+            child: Container(color: Colors.white,child: Center(child: Text(value,style: TextStyle(fontSize: .06*MediaQuery.of(context).size.width,fontWeight: FontWeight.w600,color: color ),)),height: 60,width: 90,),
           ),
           //Image.asset(image, height: 90),
           Text(
