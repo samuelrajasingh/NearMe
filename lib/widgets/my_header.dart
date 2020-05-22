@@ -35,8 +35,13 @@ class _MyHeaderState extends State<MyHeader> {
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
             colors: [
-              Color(0xFF3383CD),
-              Color(0xFF11249F),
+ 
+              // Colors.black,            // Colors.grey[900],
+              // Colors.white
+              Colors.blue,
+              Colors.green
+              // Color(0xFF3383CD),
+              // Color(0xFF11249F),
             ],
           ),
           image: DecorationImage(
