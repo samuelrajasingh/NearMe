@@ -79,8 +79,7 @@ class _DistrictDataState extends State<DistrictData> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Expanded(
-                              child: Column(
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     widget.statewise.state != "Total"
@@ -101,36 +100,36 @@ class _DistrictDataState extends State<DistrictData> {
                           Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: DataCard(
-                              value:
-                                  "${widget.statewise.confirmed}",
-                              title: "Confirmed",
-                              isActive: true,
-                              color: kInfectedColor,
-                              
+              value:
+                  "${widget.statewise.confirmed}",
+              title: "Confirmed",
+              isActive: true,
+              color: kInfectedColor,
+              
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: DataCard(
-                                value:
-                                    "${widget.statewise.recovered}",
-                                title: "Active",
-                                color: kPrimaryColor),
+                value:
+                    "${widget.statewise.active}",
+                title: "Active",
+                color: kPrimaryColor),
                           ),
-                              Padding(
+              Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: DataCard(
-                                value:
-                                    "${widget.statewise.recovered}",
-                                title: "Recovered",
-                                color: kRecovercolor),
+                value:
+                    "${widget.statewise.recovered}",
+                title: "Recovered",
+                color: kRecovercolor),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: DataCard(
-                              value:
-                                  "${widget.statewise.deaths}",
-                              title: "Deaths",
+              value:
+                  "${widget.statewise.deaths}",
+              title: "Deaths",
                             ),
                           ),
                         ],
@@ -142,7 +141,7 @@ class _DistrictDataState extends State<DistrictData> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Flexible(child: buildpie(context)),
+                      child:widget.statewise.confirmed !="0"? buildpie(context):Container(height:0,width:0),
                     ),
                     widget.statewise.state != "Total"
                         ? Text("Distrct Wise Data", style: kTitleTextstyle)
@@ -158,62 +157,62 @@ class _DistrictDataState extends State<DistrictData> {
                             //List<DistrictDatum> districtdata;
 
                             if (snapshot.hasError) {
-                              return Column(
-                                children: <Widget>[
-                                  Center(
-                                      child: Text(
-                                    "Something Went Wrong",
-                                    style: TextStyle(color: kPrimaryColor),
-                                  ))
-                                ],
-                              );
+              return Column(
+                children: <Widget>[
+                  Center(
+                      child: Text(
+                    "Something Went Wrong",
+                    style: TextStyle(color: kPrimaryColor),
+                  ))
+                ],
+              );
                             }
                             switch (snapshot.connectionState) {
-                              case ConnectionState.none:
-                                return Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Center(
-                                      child: CircularProgressIndicator(
-                                          //backgroundColor: Colors.pink[500],
-                                          )),
-                                );
-                              case ConnectionState.waiting:
-                              //  return Padding(
-                              //    padding: const EdgeInsets.all(20.0),
-                              //    child: Center(
-                              //         child: CircularProgressIndicator(
-                              //             //backgroundColor: Colors.pink[500],
-                              //             )),
-                              //  );
-                              case ConnectionState.active:
-                                    //  return Center(
-                                    // child: CircularProgressIndicator(
-                                    //     //backgroundColor: Colors.pink[500],
-                                    //     ));
-                              case ConnectionState.done:
-                                if (snapshot.hasData) {
-                                  for (var i = 0;
-                                      i <= districtwise?.length ?? 0;
-                                      i++) {
-                                    if (widget.statewise.state ==
-                                        snapshot.data[i].state)
-                                      return _build(
-                                          context, snapshot.data[i].districtData);
-                                  }
-                                }
-                              //  }
-                              // return ListView.builder(
-                              //     shrinkWrap: true,
-                              //     physics: ClampingScrollPhysics(),
-                              //     itemCount: districtwise?.length ?? 0,
-                              //     itemBuilder: (BuildContext context, int index) {
-                              //       // districtdata =
-                              //       //     snapshot.data[index].districtData;
-                              //       return widget.statewise.state ==
-                              //               snapshot.data[index].state
-                              //           ? _build(context,
-                              //               snapshot.data[index].districtData)
-                              //           : Container();
+              case ConnectionState.none:
+                return Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Center(
+                      child: CircularProgressIndicator(
+                          //backgroundColor: Colors.pink[500],
+                          )),
+                );
+              case ConnectionState.waiting:
+              //  return Padding(
+              //    padding: const EdgeInsets.all(20.0),
+              //    child: Center(
+              //         child: CircularProgressIndicator(
+              //             //backgroundColor: Colors.pink[500],
+              //             )),
+              //  );
+              case ConnectionState.active:
+                    //  return Center(
+                    // child: CircularProgressIndicator(
+                    //     //backgroundColor: Colors.pink[500],
+                    //     ));
+              case ConnectionState.done:
+                if (snapshot.hasData) {
+                  for (var i = 0;
+                      i <= districtwise?.length ?? 0;
+                      i++) {
+                    if (widget.statewise.state ==
+                        snapshot.data[i].state)
+                      return _build(
+                          context, snapshot.data[i].districtData);
+                  }
+                }
+              //  }
+              // return ListView.builder(
+              //     shrinkWrap: true,
+              //     physics: ClampingScrollPhysics(),
+              //     itemCount: districtwise?.length ?? 0,
+              //     itemBuilder: (BuildContext context, int index) {
+              //       // districtdata =
+              //       //     snapshot.data[index].districtData;
+              //       return widget.statewise.state ==
+              //               snapshot.data[index].state
+              //           ? _build(context,
+              //               snapshot.data[index].districtData)
+              //           : Container();
                             } //}
                             return Container(height: 0, width: 0);
                           }),
@@ -221,7 +220,6 @@ class _DistrictDataState extends State<DistrictData> {
                     
                   ],
                 ),
-              ),
             )
           ],
         ),
@@ -306,6 +304,7 @@ class _DistrictDataState extends State<DistrictData> {
     return AspectRatio(
       aspectRatio: 1.7,
       child: Card(
+        elevation: 0.0,
         color: Colors.white,
         child: Row(
           children: <Widget>[
@@ -314,7 +313,7 @@ class _DistrictDataState extends State<DistrictData> {
             ),
             Expanded(
               child: AspectRatio(
-                aspectRatio: 1,
+                aspectRatio: 1.4,
                 child: PieChart(
                 
                   PieChartData(
@@ -338,37 +337,40 @@ class _DistrictDataState extends State<DistrictData> {
               ),
             ),
             
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const <Widget>[
-               
-                Indicator(
-                  color: kInfectedColor,
-                  text: 'Active',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Indicator(
-                  color: kRecovercolor,
-                  text: 'Recovered',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Indicator(
-                  color: Colors.black,
-                  text: 'Death',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 18,
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const <Widget>[
+                 
+                  Indicator(
+                    color: kInfectedColor,
+                    text: 'Active',
+                    isSquare: true,
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Indicator(
+                    color: kRecovercolor,
+                    text: 'Recovered',
+                    isSquare: true,
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Indicator(
+                    color: Colors.black,
+                    text: 'Death',
+                    isSquare: true,
+                  ),
+                  SizedBox(
+                    height: 18,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(
               width: 28,
