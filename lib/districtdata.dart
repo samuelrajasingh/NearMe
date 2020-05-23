@@ -3,16 +3,20 @@ import 'package:NearMe/model/Distwise.dart';
 import 'package:NearMe/model/covidmodel.dart';
 import 'package:NearMe/widgets/counter.dart';
 import 'package:NearMe/widgets/my_header_info.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'constant.dart';
-
+  
+import 'package:fl_chart/fl_chart.dart';
+import 'indicator.dart';
 import 'model/Districtwise.dart';
 import 'model/covidmodel.dart';
 
 class DistrictData extends StatefulWidget {
-  final Statewise statewise;
+  final  Statewise statewise;
+  
 
   const DistrictData({
     Key key,
@@ -28,10 +32,23 @@ class _DistrictDataState extends State<DistrictData> {
   double offset = 0;
   Districtwise districtwise;
   DistrictDatum districtDatum;
+  int touchedIndex;
+  int active ;
+   Map<String, double> dataMap = Map();
+  List<Color> colorList = [
+    Colors.red,
+    Colors.green,
+    Colors.blue,
+    Colors.yellow,
+  ];
   @override
   void initState() {
     super.initState();
     controller.addListener(onScroll);
+    // dataMap.putIfAbsent("Infected", () => widget.statewise.);
+    // dataMap.putIfAbsent("Active", () =>((widget.statewise.active).toInt());
+    // dataMap.putIfAbsent("Death", () => 2);
+    // dataMap.putIfAbsent("Recovered", () => 2)
   }
 
   @override
@@ -63,87 +80,146 @@ class _DistrictDataState extends State<DistrictData> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  widget.statewise.state != "Total"
-                      ? Text(
-                          widget.statewise.state,
-                          style: kTitleTextstyle,
-                        )
-                      : Text(
-                          "India",
-                          style: kTitleTextstyle,
-                        ),
-                  SizedBox(height: 2),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: DataCard(
-                            value:
-                                "${((double.parse(widget.statewise.active) / double.parse(widget.statewise.confirmed) * 100).toStringAsPrecision(3))}%",
-                            title: "Active(%)",
-                            isActive: true,
-                            color: kInfectedColor,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    widget.statewise.state != "Total"
+                        ? Text(
+                            widget.statewise.state,
+                            style: kTitleTextstyle,
+                          )
+                        : Text(
+                            "India",
+                            style: kTitleTextstyle,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: DataCard(
-                              value:
-                                  "${((double.parse(widget.statewise.recovered) / double.parse(widget.statewise.confirmed) * 100).toStringAsPrecision(3))}%",
-                              title: "Recovery rate",
-                              color: kRecovercolor),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: DataCard(
-                            value:
-                                "${((double.parse(widget.statewise.deaths) / double.parse(widget.statewise.confirmed) * 100).toStringAsPrecision(3))}%",
-                            title: "Mortality rate",
+                    SizedBox(height: 4),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: DataCard(
+              value:
+                  "${widget.statewise.confirmed}",
+              title: "Confirmed",
+              isActive: true,
+              color: kInfectedColor,
+              
+                            ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: DataCard(
+                value:
+                    "${widget.statewise.active}",
+                title: "Active",
+                color: kPrimaryColor),
+                          ),
+              Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: DataCard(
+                value:
+                    "${widget.statewise.recovered}",
+                title: "Recovered",
+                color: kRecovercolor),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: DataCard(
+              value:
+                  "${widget.statewise.deaths}",
+              title: "Deaths",
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  widget.statewise.state != "Total"
-                      ? Text("Distrct Wise Data", style: kTitleTextstyle)
-                      : Container(),
-                  // SizedBox(height: 10),
-                  Container(
-                    child: FutureBuilder<List<Districtwise>>(
-                        future: getDist(),
-                        builder: (context, snapshot) {
-                          List<Districtwise> districtwise = snapshot.data;
-                          //List<DistrictDatum> districtdata;
-                          if (snapshot.hasError) {
-                            return Column(
-                              children: <Widget>[
-                                Center(child: Text("Something Went Wrong",style: TextStyle(color:kPrimaryColor),))
-                              ],
-                            );
-                          }
-                          return ListView.builder(
-                              shrinkWrap: true,
-                              physics: ClampingScrollPhysics(),
-                              itemCount: districtwise?.length ?? 0,
-                              itemBuilder: (BuildContext context, int index) {
-                                // districtdata =
-                                //     snapshot.data[index].districtData;
-                                return widget.statewise.state ==
-                                        snapshot.data[index].state
-                                    ? _build(context,
-                                        snapshot.data[index].districtData)
-                                    : Container();
-                              });
-                        }),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(height: 0),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child:widget.statewise.confirmed !="0"? buildpie(context):Container(height:0,width:0),
+                    ),
+                    widget.statewise.state != "Total"
+                        ? Text("Distrct Wise Data", style: kTitleTextstyle)
+                        : Container(),
+                    // SizedBox(height: 10),
+
+           widget.statewise.state != "Total"
+                        ?       Container(
+                      child: FutureBuilder<List<Districtwise>>(
+                          future: getDist(),
+                          builder: (context, snapshot) {
+                            List<Districtwise> districtwise = snapshot.data;
+                            //List<DistrictDatum> districtdata;
+
+                            if (snapshot.hasError) {
+              return Column(
+                children: <Widget>[
+                  Center(
+                      child: Text(
+                    "Something Went Wrong",
+                    style: TextStyle(color: kPrimaryColor),
+                  ))
                 ],
-              ),
+              );
+                            }
+                            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Center(
+                      child: CircularProgressIndicator(
+                          //backgroundColor: Colors.pink[500],
+                          )),
+                );
+              case ConnectionState.waiting:
+              //  return Padding(
+              //    padding: const EdgeInsets.all(20.0),
+              //    child: Center(
+              //         child: CircularProgressIndicator(
+              //             //backgroundColor: Colors.pink[500],
+              //             )),
+              //  );
+              case ConnectionState.active:
+                    //  return Center(
+                    // child: CircularProgressIndicator(
+                    //     //backgroundColor: Colors.pink[500],
+                    //     ));
+              case ConnectionState.done:
+                if (snapshot.hasData) {
+                  for (var i = 0;
+                      i <= districtwise?.length ?? 0;
+                      i++) {
+                    if (widget.statewise.state ==
+                        snapshot.data[i].state)
+                      return _build(
+                          context, snapshot.data[i].districtData);
+                  }
+                }
+              //  }
+              // return ListView.builder(
+              //     shrinkWrap: true,
+              //     physics: ClampingScrollPhysics(),
+              //     itemCount: districtwise?.length ?? 0,
+              //     itemBuilder: (BuildContext context, int index) {
+              //       // districtdata =
+              //       //     snapshot.data[index].districtData;
+              //       return widget.statewise.state ==
+              //               snapshot.data[index].state
+              //           ? _build(context,
+              //               snapshot.data[index].districtData)
+              //           : Container();
+                            } //}
+                            return Container(height: 0, width: 0);
+                          }),
+                    ):Container(),
+                    
+                  ],
+                ),
             )
           ],
         ),
@@ -224,84 +300,138 @@ class _DistrictDataState extends State<DistrictData> {
           }),
     );
   }
-}
-
-class PreventCard extends StatelessWidget {
-  final String image;
-  final String title;
-  final String text;
-  const PreventCard({
-    Key key,
-    this.image,
-    this.title,
-    this.text,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: SizedBox(
-        height: 156,
-        child: Stack(
-          alignment: Alignment.centerLeft,
+ Widget buildpie(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1.7,
+      child: Card(
+        elevation: 0.0,
+        color: Colors.white,
+        child: Row(
           children: <Widget>[
-            Container(
-              height: 136,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    offset: Offset(0, 8),
-                    blurRadius: 24,
-                    color: kShadowColor,
+            const SizedBox(
+              height: 2,
+            ),
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 1.4,
+                child: PieChart(
+                
+                  PieChartData(
+                      pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
+                        setState(() {
+                          if (pieTouchResponse.touchInput is FlLongPressEnd ||
+                              pieTouchResponse.touchInput is FlPanEnd) {
+                            touchedIndex = -1;
+                          } else {
+                            touchedIndex = pieTouchResponse.touchedSectionIndex;
+                          }
+                        });
+                      }),
+                      borderData: FlBorderData(
+                        show: false,
+                      ),
+                      sectionsSpace: 0,
+                      centerSpaceRadius: 40,
+                      sections: showingSections()),
+                ),
+              ),
+            ),
+            
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const <Widget>[
+                 
+                  Indicator(
+                    color: kInfectedColor,
+                    text: 'Active',
+                    isSquare: true,
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Indicator(
+                    color: kRecovercolor,
+                    text: 'Recovered',
+                    isSquare: true,
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Indicator(
+                    color: Colors.black,
+                    text: 'Death',
+                    isSquare: true,
+                  ),
+                  SizedBox(
+                    height: 18,
                   ),
                 ],
               ),
             ),
-            Image.asset(image),
-            Positioned(
-              left: 130,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                height: 136,
-                width: MediaQuery.of(context).size.width - 170,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      title,
-                      style: kTitleTextstyle.copyWith(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        text,
-                        maxLines: 4,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: SvgPicture.asset("assets/icons/forward.svg"),
-                    ),
-                  ],
-                ),
-              ),
+            const SizedBox(
+              width: 28,
             ),
           ],
         ),
       ),
     );
   }
+List<PieChartSectionData> showingSections() {
+    return List.generate(3, (i) {
+      final isTouched = i == touchedIndex;
+      final double fontSize = isTouched ? 25 : 16;
+      final double radius = isTouched ? 60 : 50;
+      switch (i) {
+        // case 0:
+        //   return PieChartSectionData(
+        //     color: const Color(0xff0293ee),
+        //     value: double.parse(widget.statewise.confirmed),
+        //     title: '40%',
+        //     radius: radius,
+        //     titleStyle: TextStyle(
+        //         fontSize: fontSize, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
+        //   );
+        case 0:
+          return PieChartSectionData(
+            color: kInfectedColor,
+            value:  double.parse(widget.statewise.active),
+            title: '${((double.parse(widget.statewise.active) / double.parse(widget.statewise.confirmed) * 100).toStringAsPrecision(3))}%',
+            radius: radius,
+            titleStyle: TextStyle(
+                fontSize: fontSize, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
+          );
+        case 1:
+          return PieChartSectionData(
+            color: kRecovercolor,
+            value:  double.parse(widget.statewise.recovered),
+            title: '${((double.parse(widget.statewise.recovered) / double.parse(widget.statewise.confirmed) * 100).toStringAsPrecision(3))}%',
+            radius: radius,
+            titleStyle: TextStyle(
+                fontSize: fontSize, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
+          );
+        case 2:
+          return PieChartSectionData(
+            color: Colors.black,
+            value:  double.parse(widget.statewise.deaths),
+            title: '${((double.parse(widget.statewise.deaths) / double.parse(widget.statewise.confirmed) * 100).toStringAsPrecision(3))}%',
+            radius: radius,
+            titleStyle: TextStyle(
+                fontSize: fontSize, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
+          );
+        default:
+          return null;
+      }
+    });
+  }
+
+
 }
+
+
 
 class DataCard extends StatelessWidget {
   final String value;
@@ -347,18 +477,18 @@ class DataCard extends StatelessWidget {
                   child: Text(
                 value,
                 style: TextStyle(
-                    fontSize: .06 * MediaQuery.of(context).size.width,
-                    fontWeight: FontWeight.w600,
+                    fontSize: .04 * MediaQuery.of(context).size.width,
+                    fontWeight: FontWeight.w800,
                     color: color),
               )),
               height: 60,
-              width: 90,
+              width: 100,
             ),
           ),
           //Image.asset(image, height: 90),
           Text(
             title,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.w700),
           ),
         ],
       ),

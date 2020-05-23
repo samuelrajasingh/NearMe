@@ -60,7 +60,16 @@ class _MaperState extends State<Maper> {
         appBar: AppBar(
             title: const Text('Covid 19 Hotspots'),
             backgroundColor: Color(0xFF3383CD),
-              
+               flexibleSpace: Container(
+                 
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: <Color>[
+              Colors.green,
+              Colors.blue
+            ]) ,)),
           
             leading: IconButton(
               icon: Icon(Icons.arrow_back),

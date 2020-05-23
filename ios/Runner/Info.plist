@@ -41,6 +41,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIStatusBarHidden</key>
+	<true/>
+
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs your location to function</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
